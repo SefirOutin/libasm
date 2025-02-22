@@ -11,25 +11,25 @@ Bienvenue dans Libasm, une bibliothèque d'utilitaires en assembleur x86-64 con�
 
 Pour installer et utiliser Libasm, suivez ces étapes simples :
 
-    Clonez le dépôt :
+Clonez le dépôt :
 
-git clone https://github.com/SefirOutin/libasm.git
-cd libasm
+		git clone https://github.com/SefirOutin/libasm.git
+		cd libasm
 
 Installez les dépendances :
 
 Assurez-vous d'avoir nasm et make installés sur votre système. Sur Ubuntu, vous pouvez les installer avec :
 
-sudo apt update
-sudo apt install nasm make
+		sudo apt update
+		sudo apt install nasm make
 
 Compilez la bibliothèque :
 
 Utilisez simplement make pour compiler la bibliothèque :
 
-    make
+		make
 
-    Cela générera un fichier libasm.a dans le répertoire racine du projet.
+	Cela générera un fichier libasm.a dans le répertoire racine du projet.
 
 📂 Structure du Projet
 
