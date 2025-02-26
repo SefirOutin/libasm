@@ -23,7 +23,9 @@ all: $(NAME)
 
 # Règle pour créer la bibliothèque
 $(NAME): $(OBJS)
-	$(AR) $(ARFLAGS) $@ $^
+	nasm -f elf64 -g3 $(SRCS)
+	ld -shared -o $(NAME) $(OBJS)
+	# $(AR) $(ARFLAGS) $@ $^
 
 # Règle pour créer les fichiers objets
 $(SRC_DIR)/%.o: $(SRC_DIR)/%.s
