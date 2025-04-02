@@ -39,4 +39,14 @@ fclean: clean
 
 re: fclean all
 
+test:
+	nasm -f elf64 srcs/ft_strlen.s -o ft_strlen.o
+	nasm -f elf64 srcs/ft_strcpy.s -o ft_strcpy.o
+	nasm -f elf64 srcs/ft_strcmp.s -o ft_strcmp.o
+
+	gcc -c srcs/main.c -o main.o
+
+	gcc -g -F dwarf main.o ft_strlen.o ft_strcmp.o ft_strcpy.o -o program
+	rm *.o
+
 .PHONY: all clean fclean re
