@@ -43,10 +43,13 @@ test:
 	nasm -f elf64 srcs/ft_strlen.s -o ft_strlen.o
 	nasm -f elf64 srcs/ft_strcpy.s -o ft_strcpy.o
 	nasm -f elf64 srcs/ft_strcmp.s -o ft_strcmp.o
+	nasm -f elf64 srcs/ft_write.s -o ft_write.o
+	nasm -f elf64 srcs/ft_read.s -o ft_read.o
+	nasm -f elf64 srcs/ft_strdup.s -o ft_strdup.o
 
-	gcc -c srcs/main.c -o main.o
+	gcc -c -O3 srcs/main.c -o main.o
 
-	gcc -g -F dwarf main.o ft_strlen.o ft_strcmp.o ft_strcpy.o -o program
+	gcc -no-pie -g -F dwarf main.o ft_strdup.o ft_read.o ft_strlen.o ft_write.o ft_strcmp.o ft_strcpy.o -o program
 	rm *.o
 
 .PHONY: all clean fclean re
