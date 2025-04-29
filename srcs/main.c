@@ -1,22 +1,70 @@
 // #include <stdio.h>
 // #include <string.h>
-// #include <stdlib.h>
+#include <stdlib.h>
 // #include <unistd.h>
 // #include <errno.h>
 
+typedef struct s_list
+{
+    void            *data;
+    struct s_list   *next;
+}                   t_list;
 
-// extern int ft_atoi_base();
+extern void ft_list_push_front(t_list **begin_list, void *data);
+extern int ft_list_size(t_list *begin_list);
+
+
+extern char *ft_strdup(const char *s);
+
+extern int ft_atoi_base(char *str, char *base);
 extern int indexInBase(char *str, char c);
 extern int ft_iswspace(char c);
 extern int checkBase(char *base);
 
+#include <stdio.h>
+
+void printList(t_list *head)
+{
+	t_list *tmp = head;
+	while (tmp)
+	{
+		printf("%s ", (char *)tmp->data);
+		tmp = tmp->next;
+	}
+	printf("\n");
+}
+
+int main(int c, char **v)
+{
+	t_list *head = NULL;
+
+	char *str = ft_strdup("hello");
+	ft_list_push_front(&head, str);
+    
+	str = ft_strdup("World");
+	ft_list_push_front(&head, str);
+    
+    
+	str = ft_strdup("heuu");
+	ft_list_push_front(&head, str);
+    printf("size: %d\n", ft_list_size(head));
+	
+	printList(head);
+    return 0;
+}
+
 // extern size_t ft_strlen(const char *str);
 // extern char *ft_strcpy(char *dest, const char *src);
+// extern char *ft_strdup(const char *s);
 // extern int ft_strcmp(const char *s1, const char *s2);
 // extern size_t ft_write(unsigned int fd, const void *buf, size_t count);
 // extern size_t ft_read(int fd, void *buf, size_t count);
-// extern char *ft_strdup(const char *s);
+// extern int ft_atoi_base(char *str, char *base);
+// extern void ft_list_push_front(t_list **begin_list, void *data);
+// extern void ft_list_remove_if(t_list **begin_list, void *data_ref, int (*cmp)(), void (*free_fct)(void *));
+// extern void ft_list_sort(t_list **begin_list, int (*cmp)())
 
+// #include <stdio.h>
 // int main() {
 //     char dest[100], src[] = "f", readBuf[100];
 
@@ -82,16 +130,22 @@ extern int checkBase(char *base);
 
 //     dup = ft_strdup(NULL);
 //     printf("\nft_strdup(NULL) -> %s\n", dup);
+
+    // printf("ft_atoi_base\n");
+    // printf("base: %s, str: %s \t| output: %d\n", "0123456789", "42424242", ft_atoi_base("42424242", "0123456789"));
+    // printf("base: %s, str: %s \t| output: %d\n", "0123456789abcdef", "42a", ft_atoi_base("42a", "0123456789abcdef"));
+    // printf("base: %s, str: %s \t\t| output: %d\n", "01", "10010110", ft_atoi_base("10010110", "01"));
+    // printf("base: %s, str: %s \t\t| output: %d\n", "poneyvif ", "epn", ft_atoi_base("epn", "poneyvif"));
+    // printf("base: %s, str: %s \t\t| output: %d\n", "0123456789", "\'   \'42", ft_atoi_base("     42", "0123456789"));
+    // printf("base: %s, str: %s \t\t| output: %d\n", "0123456789", "-42", ft_atoi_base("-42", "0123456789"));
+    // printf("base: %s, str: %s \t| output: %d\n", "0123456789", "\'   \'-+42", ft_atoi_base("     -+42", "0123456789"));
+    // printf("base: %s, str: %s \t| output: %d\n", "0123456789", "\'   \'------42", ft_atoi_base("     ------42", "0123456789"));
+    // printf("base: %s, str: %s \t\t| output: %d\n", "0123456789", "42f5", ft_atoi_base("42f5", "0123456789"));
+    // printf("base: %s, str: %s \t\t| output: %d\n", "0123456789", "-42-8", ft_atoi_base("-42-8", "0123456789"));
+    // printf("base: %s, str: %s \t\t| output: %d\n", "0123456789", "f42", ft_atoi_base("f42", "0123456789"));
+    // printf("base: NULL, str: NULL \t\t| output: %d\n", ft_atoi_base(NULL, NULL));
+    
+
 //     return 0;
 // }
 
-#include <stdio.h>
-
-int main(int c, char **v)
-{
-    // ft_atoi_base();
-    printf("output checkb: %d\n", checkBase(v[1]));
-    // printf("output wspace: %d", ft_iswspace());
-    // printf("output iofb: %d\n", indexInBase("0123456789abcdef", 'e'));
-    return 0;
-}

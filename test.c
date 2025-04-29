@@ -40,7 +40,7 @@ int checkBase(char *base)
 		return (1);
 	return (0);
 }
-
+// 0000 0000 | 0000 0000
 int atoiBase(char *str, char *base)
 {
 	int nb = 0, i = 0, sign = 1;

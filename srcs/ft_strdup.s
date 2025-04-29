@@ -10,6 +10,7 @@ ft_strdup:
 	; prologue
 	push rbp
 	mov rbp, rsp
+	sub rsp, 8
 
     test rdi, rdi                        ; check if src is NULL
     jz error
