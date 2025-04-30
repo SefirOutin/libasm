@@ -18,15 +18,15 @@ ft_strdup:
 	call ft_strlen						; len of src
 	inc rax								;  + '\0'
 
-	push rdi							; save src
+	push rdi							; save src ptr
 
 	mov rdi, rax						; size malloc
 	call malloc
 	test rax, rax						; error malloc
 	jz error_pop
 
-	mov rdi, rax
-	pop rsi
+	mov rdi, rax						; put dest ptr in rdi
+	pop rsi								; pop src ptr in rsi
 
 	xor rcx, rcx    					; Clear rcx
 

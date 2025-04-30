@@ -54,7 +54,7 @@ test:
 	nasm -g -f elf64 srcs/ft_list_remove_if.s -o ft_list_remove_if.o
 	nasm -g -f elf64 srcs/ft_list_sort.s -o ft_list_sort.o
 
-	gcc -c srcs/main.c -o main.o
+	gcc -g -c srcs/main.c -o main.o
 
 	gcc -no-pie -g -F dwarf main.o ft_strdup.o ft_read.o ft_strlen.o ft_write.o ft_strcmp.o ft_strcpy.o ft_atoi_base.o ft_list_push_front.o ft_list_size.o ft_list_sort.o ft_list_remove_if.o -o program
 	rm *.o

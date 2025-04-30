@@ -18,7 +18,7 @@ ft_list_push_front:
 	test rax, rax	; error check
 	jz error_syscall
 
-	mov qword [rax], rsi	; list->data
+	mov [rax], rsi	; list->data
 	
 	mov r14, [rdi]
 	mov qword [rax+8], r14	; list->next
