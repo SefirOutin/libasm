@@ -98,6 +98,7 @@ void ft_list_sort(t_list **begin_list, int (*cmp)())
 			prevNode = currNode;
 			currNode = currNode->next;
 		}
+		return;
 	}
 }
 

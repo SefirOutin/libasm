@@ -23,6 +23,7 @@ ft_strcmp:
 
 	end_loop:
     	sub eax, edx					; compute difference using 32-bit registers
+		movsxd rax, eax					; sign-extend in rax
 
 		leave
 		ret

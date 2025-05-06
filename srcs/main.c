@@ -37,15 +37,30 @@ void printList(t_list *head)
 	}
 	printf("\n");
 }
+/*
+
+*/
+void freeList(t_list **head)
+{
+	t_list *tmp;
+	while (*head)
+	{
+		tmp = *head;
+		*head = (*head)->next;
+		free(tmp->data);
+		free(tmp);
+	}
+}
 
 int main(int c, char **v)
 {
 	char *str;
 	t_list *head = NULL;
 	
+
+	printf("strcmp: %d\n", ft_strcmp("1", "2"));
 	str = ft_strdup("1");
 	ft_list_push_front(&head, str);
-	printf("size: %d\n", ft_list_size(head));
 	str = ft_strdup("9");
 	ft_list_push_front(&head, str);
 	str = ft_strdup("3");
@@ -62,14 +77,16 @@ int main(int c, char **v)
 	ft_list_push_front(&head, str);
 	str = ft_strdup("9");
 	ft_list_push_front(&head, str);
+	printf("size: %d\n", ft_list_size(head));
+	printf("head: %p\n", &head);
 	printList(head);
 	
-	// ft_list_remove_if(&head, "hello", strcmp, free);
+	ft_list_remove_if(&head, "9", ft_strcmp, free);
 	// t_list *t = (t_list *)ft_list_sort(&head, ft_strcmp);
-	ft_list_sort(&head, ft_strcmp);
+	// ft_list_sort(&head, ft_strcmp);
 	// printf("aaaaaaaaaaa->%s\n", (char *)t->data);
 	printList(head);
-
+	freeList(&head);
     return 0;
 }
 

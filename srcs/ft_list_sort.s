@@ -4,81 +4,82 @@ section .text
 	global ft_list_sort
 
 ft_list_sort:
-	push rbp					; stack frame
+	push rbp
 	mov rbp, rsp
+
+	push r12
+	push r13
 	push r14
-	push r15
 
-	sub rsp, 16					; local vars to save head and (*cmp)()
-	mov qword [rbp - 8], rdi
-	mov qword [rbp - 16], rsi
+	sub rsp, 16
+	mov [rbp - 8], rdi		; save list head
+	mov [rbp - 16], rsi		; save (*cmp)()
 
-	mov qword rdi, [rdi]		; get addr of 1st node
-	call ft_list_size
-	dec rax
+	test rdi, rdi			; check args
+	jz endSortLoop
+	test rsi, rsi
+	jz endSortLoop
 
-	listLoop:
-		test rax, rax	; while (len--)
-		jz endListLoop
+	listSortLoop:
+		mov rdx, [rbp - 8]		; load 1st node
+		mov rdx, [rdx]
 
-		mov rcx, [rbp - 8]		; load 1st node | currNode
-		mov rcx, [rcx]
-		xor rdx, rdx			; load prevNode
-		sortLoop:
-			test rcx, rcx
-			jz endSortLoop
+		xor r12, r12
+		xor r14, r14
+		secondLoop:
+			test rdx, rdx		; check currNode
+			jz endSecondLoop
 
-			mov r14, [rcx + 8]	; load currNode->next | nextNode
-			test r14, r14		; while (currNode->next)
-			jz endSortLoop
+			mov r13, [rdx + 8]	; load nextNode
+			test r13, r13		; check netNode
+			jz endSecondLoop
 
-			push rax
 			push rcx
 			push rdx
-			;sub rsp, 8
-			mov rax, [rbp - 16]
-			mov rdi, [rcx]		; 1st arg: currNode->data
-			mov rsi, [r14]		; 2nd arg: tmpNode->data
-			call rax			; call (*cmp)()
-			;add rsp, 8
+			mov rdi, [rdx]		; 1st arg: currNode->data
+			mov rsi, [r13]		; 2nd arg: nextNode->data
+			call [rbp - 16]		; (*cmp)()
 			pop rdx
 			pop rcx
-			
-			cmp rax, 0			; return of cmp()
+
+			cmp rax, 0			; if data1 > data2
 			jg swapNodes
 
-			pop rax
-			mov rdx, rcx		; prevNode = currNode
-			mov rcx, [rcx + 8]	; currNode = currNode->next
+			mov r12, rdx		; update prevNode
+			mov rdx, [rdx + 8]	; move to nextNode
+			jmp secondLoop
 
 			swapNodes:
-				pop rax
-				
-				mov r15, [r14 +  8]	; load tmpNode->next
-				mov [rcx + 8], r15	; currNode->next = tmpNode->next
-				mov [r14 + 8], rcx	; tmpNode->next = currNode
+				mov rdi, [r13 + 8]		; currNode->next = nextNode->next
+				mov [rdx + 8], rdi
+				mov [r13 + 8], rdx		; nextNode->next = currNode
+				;jmp endSortLoop
 
 				mov rdi, [rbp - 8]
-				cmp rcx, [rdi]	; if currNode == *begin_list
+				cmp rdx, [rdi]			; if currNode == headNode
 				je swapHead
 
-				mov [rdx + 8], r14	; prevNode->next = tmpNode
-				mov rdx, r14
-				jmp sortLoop
+				mov [r12 + 8], r13		; prevNode->next = nextNode (now currentNode)
+				mov r12, r13			; update prevNode
+				mov r14, 1				; set swap flag
+				;jmp endSortLoop
+				jmp secondLoop
 
 				swapHead:
-					mov rdi, [rbp - 8]
-					mov [rdi], r14	; *begin_list = tmpNode
-					mov rdx, r14
-					jmp sortLoop
+					mov rdi, [rbp - 8]	; load headList
+					mov [rdi], r13		; change pointer
+					mov r12, r13		; update prevNode
+					mov r14, 1			; set swap flag
+					jmp secondLoop
+
+		endSecondLoop:
+			;jmp endSortLoop
+			test r14, r14
+			jnz listSortLoop
 
 	endSortLoop:
-		dec rax
-		jmp listLoop
-
-	endListLoop:
-		add rsp, 16
-		pop r15
 		pop r14
+		pop r13
+		pop r12
 		leave
 		ret
