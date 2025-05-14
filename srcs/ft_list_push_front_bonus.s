@@ -1,18 +1,18 @@
-extern malloc
-extern __errno_location
-
 section .text
 	global ft_list_push_front
+
+	extern malloc, __errno_location
 
 ft_list_push_front:
 	push rbp
 	mov rbp, rsp
-	sub rsp, 8		; align stack (2 pushs, 1 ret addr (call))
 
 	push rdi		; save data
 	push rsi
+	sub rsp, 8		; align stack (3 pushs)
 	mov rdi, 16		; sizeof t_list
 	call malloc
+	add rsp, 8
 	pop rsi
 	pop rdi
 	test rax, rax	; error check
@@ -20,13 +20,15 @@ ft_list_push_front:
 
 	mov [rax], rsi	; list->data
 	
-	mov r14, [rdi]
-	mov qword [rax+8], r14	; list->next
+	;test rdi, rdi
+	;jz emptyList
+
+	mov rcx, [rdi]
+	mov qword [rax+8], rcx	; list->next
 
 	mov [rdi], rax			; change list head
 
-	leave
-	ret
+	jmp end
 
 	error_syscall:
 		neg rax
@@ -34,6 +36,6 @@ ft_list_push_front:
 		call __errno_location
 		pop qword [rax]
 		xor rax, rax
-	
+	end:
 		leave
 		ret

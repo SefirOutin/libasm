@@ -10,10 +10,10 @@ ft_strcmp:
 		movzx eax, byte [rdi + rcx]		; load and zero extend byte from s1
     	movzx edx, byte [rsi + rcx]		; load and zero extend byte from s2
 
-		cmp eax, 0						; check if end of s1
-		je end_loop
-		cmp edx, 0						; check if end of s2
-		je end_loop
+		test eax, eax					; check if end of s1
+		jz end_loop
+		test edx, edx					; check if end of s2
+		jz end_loop
 
 		cmp eax, edx					; check if characters matches
 		jne end_loop

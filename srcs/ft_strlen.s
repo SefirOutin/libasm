@@ -9,11 +9,11 @@ ft_strlen:
 
 	ft_strlen_loop:		
 		cmp byte [rdi + rax], 0		; check if the current character is null
-		je end_loop 				; if null end loop
+		je strlenEnd 				; if null end loop
 
 		inc rax						; increment
 		jmp ft_strlen_loop			; return to the start of loop
 
-	end_loop:
+	strlenEnd:
 		leave
 		ret

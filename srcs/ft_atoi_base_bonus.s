@@ -1,7 +1,7 @@
 extern ft_strlen
 
 section .text
-	global indexInBase, ft_iswspace, checkBase, ft_atoi_base
+	global ft_atoi_base
 
 indexInBase:
 	xor rax, rax						; clear counter
@@ -46,29 +46,29 @@ checkBase:
 
 	checkBaseMainLoop:
 		xor rdx, rdx
-		mov dl, [rdi + rax]		; load base[i] in rdx
+		mov dl, [rdi + rax]				; load base[i] in rdx
 
-		test dl, dl				; check '\0' 
+		test dl, dl						; check '\0' 
 		jz endCheckBaseLoop
 
-		cmp dl, 43 				; c == '-'
+		cmp dl, 43 						; c == '-'
 		je endCheckBaseLoopError
-		cmp dl, 45 				; c == '+'
+		cmp dl, 45 						; c == '+'
 		je endCheckBaseLoopError
 
 		push rax
 		push rdi
 		push rdx
-		mov dil, dl				; arg1 is base[i]
+		mov dil, dl						; arg1 is base[i]
 		call ft_iswspace
-		cmp rax, 1				; if base[i] is a wspace
+		cmp rax, 1						; if base[i] is a wspace
 		je endCheckBaseLoopErrorAfterCall
 		pop rdx
 		pop rdi
 		pop rax
 
 		mov rcx, rax
-		add rcx, 1				; j = i + 1
+		add rcx, 1						; j = i + 1
 		checkDoubleCharLoop:
 			xor r8b, r8b
 			mov r8b, byte [rdi + rcx]	; load base[j]
@@ -123,21 +123,21 @@ skipWhiteSpaces:
 skipOperators:
 	xor al, al
 	xor r9b, r9b
-	mov dl, byte [rdi + rcx]	; load str[i]
+	mov dl, byte [rdi + rcx]		; load str[i]
 
-	test dl, dl					; check null char
+	test dl, dl						; check null char
 	jz endSkipOp
 
-	cmp dl, 43				; if '+'
-	sete al					; set a flag bit
+	cmp dl, 43						; if '+'
+	sete al							; set a flag bit
 
-	cmp dl, 45				; if '-'
-	sete r9b				; set a flag bit
+	cmp dl, 45						; if '-'
+	sete r9b						; set a flag bit
 	
-	or al, r9b				; if none of the above,
-	jz endSkipOp				; stop
+	or al, r9b						; if none of the above,
+	jz endSkipOp					; stop
 
-	bt r9, 0				; if it's '-'
+	bt r9, 0						; if it's '-'
 	jc changeSign
 
 	inc rcx
@@ -160,74 +160,78 @@ ft_atoi_base:
 	push rbp
 	mov rbp, rsp
 
-	sub rsp, 8				; create local 64bit var
-	mov qword [rbp-8], 0	; init var
+	sub rsp, 16						; create local 64bit var & stack align
+	mov qword [rbp-8], 0			; init var
 
-	test rdi, rdi			; check if str or
-	jz error				; base is null
+	test rdi, rdi					; check if str or
+	jz error						; base is null
 	test rsi, rsi
 	jz error
 
-	push rdi			; save input str
-	mov rdi, rsi		; move input base as 1st arg
+	push rdi						; save input str
+	mov rdi, rsi					; move input base as 1st arg
 	call checkBase
-	test rax, rax		; check for error
+	test rax, rax					; check for error
 	jnz error
 
 	call ft_strlen
 	pop rdi
-	cmp rax, 2			; check if base len is > 2
+	cmp rax, 2						; check if base len is > 2
 	jl error
-	mov r8, rax			; save base len in r8
+	mov r8, rax						; save base len in r8
 
-	xor rcx, rcx		; clear counter
-	call skipWhiteSpaces	; f(str, base)
+	xor rcx, rcx					; clear counter
+	call skipWhiteSpaces			; f(str, base)
 	
 	push rsi
 	mov rsi, 1
-	call skipOperators		; f(str, &sign)
+	call skipOperators				; f(str, &sign)
 	mov r9, rax
 	pop rsi
 
 	atoiBaseLoop:
 		xor rax, rax
-		mov dl, [rdi + rcx]	; load str[i]
+		mov dl, [rdi + rcx]			; load str[i]
 
-		test dl, dl			; check null char
+		test dl, dl					; check null char
 		jz endAtoiBaseLoop
 
 		push rdi
 		push rcx
+		sub rsp, 8
 		xor rdi, rdi
 		mov dil, dl
-		call indexInBase	; f(str[i], base)
+		call indexInBase			; f(str[i], base)
+		add rsp, 8
 		pop rcx
 		pop rdi
 
-		cmp rax, 0			; check if char is in base
+		cmp rax, 0					; check if char is in base
 		jl endAtoiBaseLoop
 
 		push rax
-		mov qword rax, [rbp-8]	; put local var in rax for calc
-		imul rax, r8			; nb *= baselen
+		mov qword rax, [rbp-8]		; put local var in rax for calc
+		imul rax, r8				; nb *= baselen
 		mov qword [rbp-8], rax
 		pop rax
-		add qword [rbp-8], rax	; nb += indexInBase
+		add qword [rbp-8], rax		; nb += indexInBase
 
 		inc rcx
 		jmp atoiBaseLoop
 
 
 	endAtoiBaseLoop:
-		mov qword rax, [rbp-8]	; put final nb to rax for output
-		imul r9					; apply sign
+		mov qword rax, [rbp - 8]	; put final nb to rax for output
+		imul r9						; apply sign
 
+		add rsp, 16
 		leave
 		ret
 
 	error:
 		xor rax, rax
 
+		add rsp, 16
 		leave
 		ret
 

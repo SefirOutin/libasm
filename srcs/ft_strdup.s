@@ -1,59 +1,38 @@
-extern malloc
-extern ft_strlen
-extern __errno_location
-extern ft_write
+extern ft_strlen, ft_write, ft_strcpy
 
 section .text
 	global ft_strdup
+	
+	extern malloc, __errno_location
 
 ft_strdup:
 	; prologue
 	push rbp
 	mov rbp, rsp
+
 	sub rsp, 8
-
-    test rdi, rdi                        ; check if src is NULL
-    jz error
-
 	call ft_strlen						; len of src
 	inc rax								;  + '\0'
+	add rsp, 8
 
 	push rdi							; save src ptr
-
 	mov rdi, rax						; size malloc
 	call malloc
+	pop rsi								; pop src ptr in rsi
 	test rax, rax						; error malloc
-	jz error_pop
+	jz strdupError
 
 	mov rdi, rax						; put dest ptr in rdi
-	pop rsi								; pop src ptr in rsi
+	call ft_strcpy
 
-	xor rcx, rcx    					; Clear rcx
+	jmp strdupEnd
 
-	ft_strdup_loop:
-		mov dl, byte [rsi + rcx]		; cpy src[i] -> dest[i]
-		mov byte [rdi + rcx], dl	
-
-		test dl, dl						; if src[i] is null
-		jz end_loop
-
-		inc rcx							; increment counter
-		jmp ft_strdup_loop
-
-	end_loop:
-		mov rax, rdi
-		leave
-		ret
-
-	error_pop:
-    	pop rdi                             ; cleanup stack (src pointer)
-		
-	error:
+	strdupError:
 		mov rax, -1
 		push rax
 		call __errno_location
 		pop qword [rax]
 		xor rax, rax                        ; return NULL
+	strdupEnd:
 		leave                               ; restore stack frame
 		ret
-

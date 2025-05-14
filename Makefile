@@ -2,61 +2,71 @@ NAME = libasm.a
 
 # Compilateur assembleur
 ASM = nasm
-
-# Drapeaux pour le compilateur
-ASMFLAGS = -f elf64
+ASMFLAGS = -f elf64 -g
 
 # Archiveur pour créer la bibliothèque
 AR = ar
 ARFLAGS = rcs
 
-# Dossier des sources
+# Dossier des sources & objets
 SRC_DIR = srcs
+OBJ_DIR = objs
+BONUS_OBJ_DIR = objs_bonus
 
-# Fichiers source en assembleur
-SRCS = $(wildcard $(SRC_DIR)/*.s)
+# Fichiers source
+SRC_FILES = ft_strlen.s ft_strcpy.s ft_strcmp.s ft_write.s ft_read.s ft_strdup.s
+SRCS = $(addprefix $(SRC_DIR)/,$(SRC_FILES))
+
+# Fichiers bonus
+BONUS_FILES = ft_atoi_base_bonus.s ft_list_push_front_bonus.s ft_list_size_bonus.s \
+              ft_list_sort_bonus.s ft_list_remove_if_bonus.s
+BONUS_SRCS = $(addprefix $(SRC_DIR)/,$(BONUS_FILES))
 
 # Fichiers objets correspondants
-OBJS = $(SRCS:$(SRC_DIR)/%.s=%.o)
+OBJS = $(patsubst $(SRC_DIR)/%.s,$(OBJ_DIR)/%.o,$(SRCS))
+BONUS_OBJS = $(patsubst $(SRC_DIR)/%.s,$(BONUS_OBJ_DIR)/%.o,$(BONUS_SRCS))
+
+# Fichier de marquage pour savoir si les bonus sont inclus
+BONUS_MARKER = .bonus_done
 
 all: $(NAME)
 
+# Règle bonus qui met à jour la bibliothèque principale avec les fonctions bonus
+bonus: $(BONUS_OBJ_DIR) $(BONUS_OBJS) $(NAME) $(BONUS_MARKER)
+
+$(BONUS_MARKER): $(BONUS_OBJS)
+	$(AR) $(ARFLAGS) $(NAME) $(BONUS_OBJS)
+	touch $(BONUS_MARKER)
+
+# Règle pour créer le dossier des objets
+$(OBJ_DIR):
+	mkdir -p $(OBJ_DIR)
+
+$(BONUS_OBJ_DIR):
+	mkdir -p $(BONUS_OBJ_DIR)
+
 # Règle pour créer la bibliothèque
-$(NAME): $(OBJS)
-	nasm -f elf64 -g3 $(SRCS)
-	ld -shared -o $(NAME) $(OBJS)
-	# $(AR) $(ARFLAGS) $@ $^
+$(NAME): $(OBJ_DIR) $(OBJS)
+	$(AR) $(ARFLAGS) $@ $(OBJS)
 
 # Règle pour créer les fichiers objets
-$(SRC_DIR)/%.o: $(SRC_DIR)/%.s
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.s
+	$(ASM) $(ASMFLAGS) -o $@ $<
+
+# Règle pour créer les fichiers objets bonus
+$(BONUS_OBJ_DIR)/%.o: $(SRC_DIR)/%.s
 	$(ASM) $(ASMFLAGS) -o $@ $<
 
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR) $(BONUS_OBJ_DIR)
+	rm -f $(BONUS_MARKER)
 
 fclean: clean
 	rm -f $(NAME)
 
 re: fclean all
 
-test:
-	nasm -g -f elf64 srcs/ft_strlen.s -o ft_strlen.o
-	nasm -g -f elf64 srcs/ft_strcpy.s -o ft_strcpy.o
-	nasm -g -f elf64 srcs/ft_strcmp.s -o ft_strcmp.o
-	nasm -g -f elf64 srcs/ft_write.s -o ft_write.o
-	nasm -g -f elf64 srcs/ft_read.s -o ft_read.o
-	nasm -g -f elf64 srcs/ft_strdup.s -o ft_strdup.o
-	
-	nasm -g -f elf64 srcs/ft_atoi_base.s -o ft_atoi_base.o
+test: bonus
+	gcc -W -W -W -no-pie -g -o main -fsanitize=address main.c -L. -lasm
 
-	nasm -g -f elf64 srcs/ft_list_push_front.s -o ft_list_push_front.o
-	nasm -g -f elf64 srcs/ft_list_size.s -o ft_list_size.o
-	nasm -g -f elf64 srcs/ft_list_remove_if.s -o ft_list_remove_if.o
-	nasm -g -f elf64 srcs/ft_list_sort.s -o ft_list_sort.o
-
-	gcc -g -c srcs/main.c -o main.o
-
-	gcc -no-pie -g -F dwarf main.o ft_strdup.o ft_read.o ft_strlen.o ft_write.o ft_strcmp.o ft_strcpy.o ft_atoi_base.o ft_list_push_front.o ft_list_size.o ft_list_sort.o ft_list_remove_if.o -o program
-	rm *.o
-
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus

@@ -1,20 +1,24 @@
+extern ft_strlen
+
 section .text
 	global ft_strcpy
 
 ft_strcpy:
-	xor rcx, rcx    					; Clear rcx
+	push rbp
+	mov rbp, rsp
 
-	ft_strcpy_loop:	
-		mov al, [rsi + rcx]				; cpy src[i] -> dest[i]
-		mov [rdi + rcx], al	
+	push rdi			; save dest ptr
+	mov rdi, rsi		; 1st arg: src 
+	call ft_strlen
+	mov rcx, rax		; move len to count reg
+	mov rsi, rdi
+	pop rdi
 
-		inc rcx							; increment counter
-		
-		cmp byte [rsi + rcx], 0			; check if the current character in src is null
-		je end_loop 					; if null end loop
+	push rdi			; save rdi, it will be incremented
+	rep movsb			; move rcx bytes from src to dest
+	mov byte [rdi], 0	; '\0'
 
-		jmp ft_strcpy_loop
-
-	end_loop:
-		mov rax, rdi
+	strcpyEnd:
+		pop rax
+		leave
 		ret

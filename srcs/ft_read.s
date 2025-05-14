@@ -1,15 +1,16 @@
-extern __errno_location
-
 section .text
 	global ft_read
 
+	extern __errno_location
 
 ft_read:
 	push rbp
 	mov rbp, rsp
 
+	sub rsp, 8
 	xor rax, rax			; syscall read
 	syscall
+	add rsp, 8
 
 	test rax, rax
 	js error_syscall

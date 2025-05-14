@@ -1,2 +1,5 @@
 program
-*.o
+*.olibasmTester
+libasmTester
+.gitignore
+.vscode
