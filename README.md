@@ -35,6 +35,5 @@ Utilisez simplement make pour compiler la bibliothèque :
 
 📂 Structure du Projet
 
- - src/ : Contient les fichiers source en assembleur (.s).
- - include/ : Contient les fichiers d'en-tête (si nécessaire).
+ - srcs/ : Contient les fichiers source en assembleur (.s).
  - Makefile : Fichier Makefile pour automatiser la compilation.
