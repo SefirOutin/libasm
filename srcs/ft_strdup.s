@@ -10,14 +10,12 @@ ft_strdup:
 	push rbp
 	mov rbp, rsp
 
-	sub rsp, 8
 	call ft_strlen						; len of src
 	inc rax								;  + '\0'
-	add rsp, 8
 
 	push rdi							; save src ptr
 	mov rdi, rax						; size malloc
-	call malloc
+	call malloc wrt ..plt
 	pop rsi								; pop src ptr in rsi
 	test rax, rax						; error malloc
 	jz strdupError
@@ -30,7 +28,7 @@ ft_strdup:
 	strdupError:
 		mov rax, -1
 		push rax
-		call __errno_location
+		call __errno_location wrt ..plt
 		pop qword [rax]
 		xor rax, rax                        ; return NULL
 	strdupEnd:

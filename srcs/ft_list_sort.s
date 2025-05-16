@@ -7,11 +7,11 @@ ft_list_sort:
 	push rbp
 	mov rbp, rsp
 
+	sub rsp, 16
 	push r12
 	push r13
 	push r14
 
-	sub rsp, 16
 	mov [rbp - 8], rdi					; save list head
 	mov [rbp - 16], rsi					; save (*cmp)()
 
@@ -45,7 +45,7 @@ ft_list_sort:
 			cmp rax, 0					; if data1 > data2
 			jg swapNodes
 
-			mov r13, rdx					; update prevNode
+			mov r13, rdx				; update prevNode
 			mov rdx, [rdx + 8]			; move to nextNode
 			jmp secondLoop
 
@@ -60,7 +60,7 @@ ft_list_sort:
 				je swapHead
 
 				mov [r13 + 8], r14		; prevNode->next = nextNode (now currentNode)
-				mov r13, r14				; update prevNode
+				mov r13, r14			; update prevNode
 				mov r12, 1				; set swap flag
 				;jmp endSortLoop
 				jmp secondLoop
@@ -68,7 +68,7 @@ ft_list_sort:
 				swapHead:
 					mov rdi, [rbp - 8]	; load headList
 					mov [rdi], r14		; change pointer
-					mov r13, r14			; update prevNode
+					mov r13, r14		; update prevNode
 					mov r12, 1			; set swap flag
 					jmp secondLoop
 
@@ -78,9 +78,9 @@ ft_list_sort:
 			jnz listSortLoop
 
 	endSortLoop:
-		add rsp, 16
 		pop r14
 		pop r13
 		pop r12
+		add rsp, 16
 		leave
 		ret

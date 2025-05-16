@@ -48,15 +48,11 @@ void freeList(t_list **head)
 
 int main() {
 	char dest[100], src[] = "fooooooob", readBuf[100];
-	char *str;
 	t_list *head = NULL;
     
     memset(dest, 0, sizeof(dest));
-    // int p[2];
-    // pipe(p);
-    // errno = 0;
-    // ft_write(p[1], NULL, 1);
-    // printf("errno: %d\n", (errno));
+    memset(readBuf, 0, sizeof(readBuf));
+    // write(1, NULL, 1);
 
     printf("ft_strlen\n");
 	printf("len \"\": %ld\n", ft_strlen(""));
@@ -75,27 +71,27 @@ int main() {
     printf("\"aba\" \"abz\"\tft_strcmp: %d | strcmp: %d\n", ft_strcmp("aba", "abz"), strcmp("aba", "abz"));
     printf("\"abj\" \"abc\"\tft_strcmp: %d | strcmp: %d\n", ft_strcmp("abj", "abc"), strcmp("abj", "abc"));
     printf("\"abc\" \"abcd\"\tft_strcmp: %d | strcmp: %d\n", ft_strcmp("abc", "abcd"), strcmp("abc", "abcd"));
-    printf("\"\" \"ab\"\t\tft_strcmp: %d\n | strcmp: %d", ft_strcmp("", "ab"), strcmp("", "ab"));
-    
+    printf("\"\" \"ab\"\t\tft_strcmp: %d | strcmp: %d\n", ft_strcmp("", "ab"), strcmp("", "ab"));
+
 
     ft_write(1, "\nft_write\n", 10);
-    printf("\"\" (return: %ld) <- arg len = -6\n", ft_write(1, "write", -6));
-    // printf("\"\" (return: %ld) <- arg len = -6\n", write(1, NULL, -6));
+    printf("ft_write: \"\" (return: %ld) <- arg len = -6\n", ft_write(1, "write", -6));
+    // printf("write: \"\" (return: %ld) <- arg len = -6\n", write(1, "", -6));
     printf("\"\" (return: %ld)\n", ft_write(1, "", 1));
     printf(" (return: %ld)\n", ft_write(1, "Hello World", 11));
     printf(" (return: %ld)\n", ft_write(1, "hmmmmmmmmmmmmmmmmmmmmmmmmmmm", 29));
     
 
     printf("\nft_read\n");
-    // ft_write(1, "Enter something (100 char max): ", 32);
-    // errno = 0;
-    // printf("(return ft: %ld) %s", ft_read(1, readBuf, 100), readBuf);
-    // printf("errno: %s\n", strerror(errno));
-    // errno = 0;
-    // ft_write(1, "\nEnter something (100 char max): ", 32);
-    // printf("(return: %ld) %s", read(1, readBuf, 100), readBuf);
-    // printf("errno: %s\n", strerror(errno));
-
+    ft_write(1, "Enter something (100 char max): ", 32);
+    errno = 0;
+    printf("(return ft: %ld) %s", ft_read(0, readBuf, 100), readBuf);
+    printf("errno: %s\n", strerror(errno));
+    printf("\nread\n");
+    ft_write(1, "Enter something (100 char max): ", 32);
+    errno = 0;
+    printf("(return ft: %ld) %s", ft_read(0, readBuf, 100), readBuf);
+    printf("errno: %s\n", strerror(errno));
 
     printf("\nft_strdup\n");
     char *dup;
@@ -141,23 +137,22 @@ int main() {
 	printf("size list: %d\n", ft_list_size(head));
 	printf("size NULL: %d\n", ft_list_size(NULL));
     
-	// printf("\nft_list_sort\n");
-	// ft_list_sort(&head, ft_strcmp);
-	// printList(head);
+	printf("\nft_list_sort\n");
+	ft_list_sort(&head, ft_strcmp);
+	printList(head);
     
 	printf("\nft_list_remove_if (\"9\")\n");
-	ft_list_remove_if(&head, "7", ft_strcmp, free);
+    printf("head before: %p\n", head);
+	ft_list_remove_if(&head, "9", ft_strcmp, free);
     printf("printing list after removing: head %p\n", head);
 	printList(head);
     
-    // ft_list_remove_if(&head, "1", ft_strcmp, free);
-	// ft_list_remove_if(&head, "3", ft_strcmp, free);
-	// ft_list_remove_if(&head, "5", ft_strcmp, free);
-    // ft_list_remove_if(&head, "2", ft_strcmp, free);
-	// ft_list_remove_if(&head, "7", ft_strcmp, free);
+    ft_list_remove_if(&head, "1", ft_strcmp, free);
+	ft_list_remove_if(&head, "3", ft_strcmp, free);
+	ft_list_remove_if(&head, "5", ft_strcmp, free);
+    ft_list_remove_if(&head, "2", ft_strcmp, free);
+	ft_list_remove_if(&head, "7", ft_strcmp, free);
 	
-	
-    freeList(&head);
     return 0;
 }
 

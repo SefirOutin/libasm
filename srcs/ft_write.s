@@ -7,28 +7,35 @@ ft_write:
 	push rbp
 	mov rbp, rsp
 
-	cmp rdx, 0			; test if len is neg
-	jl	writeError
-
 	sub rsp, 8
+
+	test rsi, rsi
+	jz writeError
+	
 	mov rax, 1			; syscall write
 	syscall
-	add rsp, 8
-	
 
 	test rax, rax
 	js writeErrorSyscall
 
+	add rsp, 8
 	leave
 	ret
 
 	writeErrorSyscall:
 		neg rax
 		push rax
-		call __errno_location
+		call __errno_location wrt ..plt
 		pop qword [rax]
+		jmp skipErrno
 	writeError:
+		mov rax, 22
+		push rax
+		call __errno_location wrt ..plt
+		pop qword [rax]
+	skipErrno:
 		mov rax, -1
+		add rsp, 8
 		leave
 		ret
 	

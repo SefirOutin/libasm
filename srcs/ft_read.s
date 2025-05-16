@@ -21,7 +21,7 @@ ft_read:
 	error_syscall:
 		neg rax
 		push rax
-		call __errno_location
+		call __errno_location wrt ..plt
 		pop qword [rax]
 
 	error:

@@ -160,7 +160,7 @@ ft_atoi_base:
 	push rbp
 	mov rbp, rsp
 
-	sub rsp, 16						; create local 64bit var & stack align
+	sub rsp, 8						; create local 64bit var & stack align
 	mov qword [rbp-8], 0			; init var
 
 	test rdi, rdi					; check if str or

@@ -17,8 +17,8 @@ ft_strcpy:
 	push rdi			; save rdi, it will be incremented
 	rep movsb			; move rcx bytes from src to dest
 	mov byte [rdi], 0	; '\0'
+	pop rax
 
 	strcpyEnd:
-		pop rax
 		leave
 		ret
